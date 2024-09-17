@@ -20,9 +20,25 @@ if __name__ == "__main__":
     def minus_1(x):
         return x-1, 1
     
+
+    def noinput():
+        return 1
+    
+    def nooutput():
+        x=1
+    
     context = Context(parser = {'a': 1, 'b': 2})
 
     pipeline = Pipeline([
+
+        Node(func=noinput,
+             inputs=None,
+             outputs='foo_output'),
+
+        Node(func=nooutput,
+             inputs=None,
+             outputs=None),
+
         Node(func=sum, 
              inputs=['context.parser.a', 'context.parser.b'], 
              outputs='c'),

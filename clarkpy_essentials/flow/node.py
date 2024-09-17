@@ -24,5 +24,8 @@ class Node:
         elif isinstance(self.inputs, Dict):
             return self.func(**inputs)
 
+        elif self.inputs is None:
+            return self.func()
+
         else:
             return self.func(inputs)

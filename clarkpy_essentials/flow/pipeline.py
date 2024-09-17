@@ -11,6 +11,10 @@ def resolve_context_input(input_name: str, context: Context):
     Deduce input value and handle context syntax
     '''
 
+
+    if input_name == None:
+        return None
+    
     if input_name == 'context':
         return context
     
