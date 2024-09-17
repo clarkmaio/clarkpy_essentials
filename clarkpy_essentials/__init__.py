@@ -1,4 +1,5 @@
 
+from .decorator import decorator
 
 from .data_catalog.data_catalog import DataCatalog
 from .parser.parser_manager import ParserManager
