@@ -15,18 +15,19 @@ def resolve_context_input(input_name: str, context: Context):
     if input_name == None:
         return None
     
-    if input_name == 'context':
+    elif input_name == 'context':
         return context
     
-    elif input_name.startswith('context.catalog'):
+    elif isinstance(input_name, str) and input_name.startswith('context.catalog'):
         _, _, key = input_name.split('.')
         return context.catalog(key)
 
-    elif input_name.startswith('context.'):
-        _, attr, keys = input_name.split('.')
+    elif isinstance(input_name, str) and input_name.startswith('context.'):
+        attr = input_name.split('.')[1]
+        keys = input_name.split('.')[2:]
 
-        output = getattr(context, attr)[keys[0]]
-        for k in keys[1:]:
+        output = getattr(context, attr)
+        for k in keys:
             output = output[k]
         return output
     
@@ -40,13 +41,21 @@ def map_input_to_value(node_inputs, results: Dict, context: Context):
     '''
     
     if isinstance(node_inputs, Dict):
-        resolved_node_inputs = {
-            key: results.get(resolve_context_input(item, context), resolve_context_input(item, context)) for key, item in node_inputs.items()
-        }
+        resolved_node_inputs = {}
+        for key, item in node_inputs.items():
+            resolved_inp = resolve_context_input(item, context)
+            resolved_node_inp = results.get(resolved_inp, resolved_inp) if isinstance(resolved_inp, str) else resolved_inp
+
+            resolved_node_inputs[key] = resolved_node_inp
+
     elif isinstance(node_inputs, List):
-        resolved_node_inputs = [
-            results.get(resolve_context_input(inp, context), resolve_context_input(inp, context)) for inp in node_inputs
-        ]
+        resolved_node_inputs = []
+        for inp in node_inputs:
+            resolved_inp = resolve_context_input(inp, context)
+            resolved_node_inp = results.get(resolved_inp, resolved_inp) if isinstance(resolved_inp, str) else resolved_inp
+            
+            resolved_node_inputs.append(resolved_node_inp)
+
     else:
         resolved_input = resolve_context_input(node_inputs, context)
         resolved_node_inputs = results.get(resolved_input, resolved_input)
