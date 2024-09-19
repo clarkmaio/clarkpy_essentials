@@ -1,66 +1,38 @@
 
 
+import os
+import pandas as pd
+
 from clarkpy_essentials.context.context import Context
 from clarkpy_essentials.flow.pipeline import Pipeline
 from clarkpy_essentials.flow.node import Node
-
+from clarkpy_essentials.data_catalog.data_catalog import DataCatalog
 
 if __name__ == "__main__":
     
-    def sum(x, y):
-        z = x+y
-        print('Sum', z)
-        return z
-    
-    def prod(x, y):
-        z = x*y
-        print('Prod', z)
-        return z
+    # Node functions
+    def f1(x: float, y: float) -> float:
+        return x*y
 
-    def minus_1(x):
-        return x-1, 1
+
+    def f2(df: pd.DataFrame, z: float) -> pd.DataFrame:
+        new_df = (df*z).T
+        return new_df
     
 
-    def noinput():
-        return 1
-    
-    def nooutput():
-        x=1
+    # ------------ Create Context --------------
+    GLOBAL_VARIABLES = {'var1': 1, 'var2': 100, 'dataframe': pd.DataFrame(np.random.randn(10, 5))}
+    context = Context(global_variables=GLOBAL_VARIABLES)
 
-    def arrayfunc(v, const):
-        return v*const
-    
-    context = Context(parser = {'var1': {'aa': 1, 'bb': 1},
-                                'var2': 2},
-                        array = [1,2,3,4,5,6])
-
+    # ------------ Initialize Piepline ---------
     pipeline = Pipeline([
-        
-
-        
-        Node(func=arrayfunc,
-             inputs=['context.array', 2],
-             outputs='new_array'),
-
-        Node(func=noinput,
-             inputs=None,
-             outputs='foo_output'),
-
-        Node(func=nooutput,
-             inputs=None,
-             outputs=None),
-
-        Node(func=sum, 
-             inputs=['context.parser.var1.aa', 'context.parser.var2'], 
-             outputs='c'),
-
-        Node(func=prod, 
-             inputs=['context.parser.var1.bb', 'c'],
-             outputs='d'),
-
-        Node(func=minus_1, 
-             inputs={'x': 'd'},
-             outputs=['e', 'one']),
+        Node(func=f1,
+            inputs=['context.global_variables.var1', 'context.global_variables.var2'],
+            outputs='outpout_f1'),
+        # Node(func=f2,
+        #      inputs=['context.catalog.csv_test', 'outpout_f1'],
+        #      outputs='outpout_f2')
     ])
 
-    results = pipeline.run(context=context)
+    # ------------ Run Piepline ----------------
+    pipeline_results = pipeline.run(context=context)
