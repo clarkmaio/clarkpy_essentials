@@ -74,7 +74,7 @@ class DataCatalog:
         '''
 
         # Custom Loaders
-        if type in self.custom_loader:
+        if type in self.custom_loaders:
             raise NotImplementedError('Catalog can not yet handle custom loaders')
 
 
