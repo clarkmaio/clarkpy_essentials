@@ -1,6 +1,6 @@
 
 
-from clarkpy_essentials.data_transformer.transformer import DataTransformer
+from clarkpy_essentials.data_transformer.data_transformer import DataTransformer
 
 if __name__ == '__main__':
 

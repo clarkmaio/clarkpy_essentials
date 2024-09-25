@@ -21,10 +21,12 @@ def check_instructions(instructions: List):
         assert 'type' in i, 'Every step must contain "type" key'
 
 
-class DataTransformer():
+class DataTransformer:
 
-    def __init__(self) -> None:
+    def __init__(self, catalog: Dict = {}}) -> None:
         self._transformer_catalog = {}
+
+        self.add_transformer_catalog(catalog=catalog)
         pass
 
     
