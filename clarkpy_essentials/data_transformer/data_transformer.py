@@ -23,7 +23,7 @@ def check_instructions(instructions: List):
 
 class DataTransformer:
 
-    def __init__(self, catalog: Dict = {}}) -> None:
+    def __init__(self, catalog: Dict = {}) -> None:
         self._transformer_catalog = {}
 
         self.add_transformer_catalog(catalog=catalog)
