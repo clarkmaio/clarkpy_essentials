@@ -6,6 +6,25 @@ from typing import Dict, Union
 import yaml
 
 
+
+def parse_type(type: str):
+    if type == 'str':
+        return str
+    elif type == 'int':
+        return int
+    elif type == 'float':
+        return float
+    elif type == 'bool':
+        return bool
+    else:
+        return type
+
+def parse_arg_params(item: Dict):
+    if 'type' in item:
+        item['type'] = parse_type(item['type'])
+    return item
+
+
 class ParserManager:
 
     def __init__(self):
@@ -29,7 +48,8 @@ class ParserManager:
 
         parser = ArgumentParser()
         for key, item in parser_instructions.items():
-            parser.add_argument(f'--{key}', **item)
+            item_parsed = parse_arg_params(item=item)
+            parser.add_argument(f'--{key}', **item_parsed)
 
         parser_args = vars(parser.parse_args())
         return parser_args
@@ -39,3 +59,11 @@ class ParserManager:
         return yaml.safe_load(open(path, 'r'))
         
 
+if __name__ == '__main__':
+    parser_instructions = {
+        'var': {
+            'default': '1',
+            'type': 'float'
+        }
+    }
+    args = ParserManager.build_parser(parser_instructions)
